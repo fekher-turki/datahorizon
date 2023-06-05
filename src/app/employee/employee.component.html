@@ -1,0 +1,185 @@
+<section class="main-container">
+  <div>
+    <!-- Page header -->
+    <div class="row">
+      <div class="col-xl-12">
+        <h2 class="page-header">Emplyées</h2>
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <i class="fa fa-dashboard"></i> Emplyées
+          </li>
+          <li class="breadcrumb-item active">
+            <fa-icon [icon]="faList"></fa-icon> Liste des emplyées
+          </li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Page body -->
+    <br />
+    <button type="button" class="btn mb-4" data-bs-toggle="modal" data-bs-target="#addEmployeeModal">
+      Ajouter un nouvel employé
+    </button>
+    <div class="modal fade" id="addEmployeeModal" tabindex="-1" aria-labelledby="addEmployeeModalLabel"
+      aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h1 class="modal-title fs-5" id="addEmployeeModalLabel">
+              Ajouter un nouvel employé
+            </h1>
+            <button type="button" class="btn" data-bs-dismiss="modal" aria-label="Fermer">
+              <fa-icon [icon]="faClose"></fa-icon>
+            </button>
+          </div>
+          <form (ngSubmit)="addEmployee()" ngNativeValidate>
+            <div class="modal-body">
+              <div class="input-group mb-3">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="imageUrl" [(ngModel)]="employee.imageUrl" name="imageUrl"
+                    placeholder="Entrez l'URL de l'image" required />
+                  <label for="imageUrl">Entrez l'URL de l'image</label>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="lastName" [(ngModel)]="employee.lastName" name="lastName"
+                    minlength="2" placeholder="Nom" required />
+                  <label for="lastName">Nom</label>
+                </div>
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="firstName" [(ngModel)]="employee.firstName"
+                    name="firstName" minlength="2" placeholder="Prénom" required />
+                  <label for="firstName">Prénom</label>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <div class="form-floating">
+                  <input type="email" class="form-control" id="email" [(ngModel)]="employee.email" name="email"
+                    placeholder="Email" required />
+                  <label for="email">Email</label>
+                </div>
+                <div class="form-floating">
+                  <input type="number" class="form-control" id="contactNumber" [(ngModel)]="employee.contactNumber"
+                    name="contactNumber" minlength="8" placeholder="Numéro de contact" required />
+                  <label for="firstName">Numéro de contact</label>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <div class="form-floating">
+                  <input type="date" max="{{ minAge | date : 'yyyy-MM-dd' }}" class="form-control" id="dob"
+                    [(ngModel)]="employee.dob" name="dob" placeholder="Date de naissance" required />
+                  <label for="dob">Date de naissance</label>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <div class="form-floating">
+                  <input type="number" min="0" step="0.1" class="form-control" id="salary" [(ngModel)]="employee.salary"
+                    name="salary" placeholder="Salaire" required />
+                  <label for="salary">Salaire</label>
+                </div>
+              </div>
+              <div class="input-group mb-3">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="address" [(ngModel)]="employee.address" name="address"
+                    minlength="2" placeholder="Adresse" required />
+                  <label for="address">Adresse</label>
+                </div>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" class="btn btn-secondary">Soumettre</button>
+              <button #closeButton type="button" class="btn" data-bs-dismiss="modal">
+                Fermer
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div *ngIf="displayTable" class="table-responsive">
+      <table *ngIf="employees" datatable [dtOptions]="dtOptions" class="table table-hover table-bordered">
+        <thead>
+          <tr>
+            <th>URL de l'image</th>
+            <th>Nom</th>
+            <th>Prénom</th>
+            <th>Email</th>
+            <th>Numéro de contact</th>
+            <th>Âge</th>
+            <th>Date de naissance</th>
+            <th>Salaire</th>
+            <th>Adresse</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let employee of employees" style="width: 100%">
+            <td>
+              <img src="{{ employee.imageUrl }}" alt="{{ employee.firstName + ' ' + employee.lastName }}" />
+            </td>
+            <td>
+              {{ employee.lastName }}
+            </td>
+            <td>
+              {{ employee.firstName }}
+            </td>
+            <td>
+              {{ employee.email }}
+            </td>
+            <td>
+              {{ employee.contactNumber }}
+            </td>
+            <td>
+              {{ employee.age }}
+            </td>
+            <td>
+              {{ employee.dob }}
+            </td>
+            <td>
+              {{ employee.salary.toFixed(1) }}
+            </td>
+            <td>
+              {{ employee.address }}
+            </td>
+            <td>
+              <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                [attr.data-bs-target]="'#myModal' + employee.id">
+                <fa-icon [icon]="faTrashCan"></fa-icon>
+              </button>
+
+              <div class="modal fade" id="myModal{{ employee.id }}" tabindex="-1" aria-labelledby="myModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                  <div class="modal-content bg-dark">
+                    <div class="modal-header">
+                      <h4 class="modal-title fs-5" id="exampleModalLabel">
+                        Attention!
+                      </h4>
+                      <button type="button" class="btn btn-dark" data-bs-dismiss="modal" aria-label="Close">
+                        <fa-icon [icon]="faClose"></fa-icon>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      Vous êtes sur le point de supprimer les données de {{employee.firstName+' '+employee.lastName}}
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-danger" data-bs-dismiss="modal"
+                        (click)="deleteEmployee(employee)" routerlinkactive="active">
+                        <fa-icon [icon]="faTrashCan"></fa-icon>
+                      </button>
+                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <fa-icon [icon]="faClose"></fa-icon>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <hr />
+  </div>
+</section>
